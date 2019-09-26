@@ -2,59 +2,59 @@
 // import "core-js/fn/array.find"
 // ...
 
-import * as request from "request-promise-native";
+import * as request from 'request-promise-native'
 
-import { TokenProvider } from "./token-provider";
+import { TokenProvider } from './token-provider'
 
 export class ChatClient {
-  private options: ChatClientOptions;
-  private tokenProvider: TokenProvider;
+  private options: ChatClientOptions
+  private tokenProvider: TokenProvider
 
   constructor(options: ChatClientOptions) {
-    this.options = options;
-    this.tokenProvider = options.tokenProvider;
+    this.options = options
+    this.tokenProvider = options.tokenProvider
   }
 
   public async getMyGroups() {
-    const token = await this.tokenProvider.getAuthToken();
+    const token = await this.tokenProvider.getAuthToken()
 
     const result = await request.post({
       uri: `${this.options.chatApiEndpoint}/groups.list`,
       body: { token }
-    });
+    })
 
-    return result;
+    return result
   }
 
   public async sendMessage(groupId: string, message: string) {
-    const token = await this.tokenProvider.getAuthToken();
+    const token = await this.tokenProvider.getAuthToken()
 
     const result = await request.post({
       uri: `${this.options.chatApiEndpoint}/messages.send`,
       body: { token, group_id: groupId, message }
-    });
+    })
 
-    return result;
+    return result
   }
 
   public async getGroupMessages(groupId: string, limit: number, skipTillTime: Date) {
-    const token = await this.tokenProvider.getAuthToken();
-    let uri = `${this.options.chatApiEndpoint}/messages.list?`;
+    const token = await this.tokenProvider.getAuthToken()
+    let uri = `${this.options.chatApiEndpoint}/messages.list?`
 
     if (limit) {
-      uri += `limit=${limit}`;
+      uri += `limit=${limit}`
     }
 
     if (skipTillTime) {
-      uri += `skip_till_time=${skipTillTime}`;
+      uri += `skip_till_time=${skipTillTime}`
     }
 
     const result = await request.post({
       uri: uri,
       body: { token, group_id: groupId }
-    });
+    })
 
-    return result;
+    return result
   }
 }
 

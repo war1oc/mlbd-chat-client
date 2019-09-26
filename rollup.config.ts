@@ -7,7 +7,7 @@ import json from 'rollup-plugin-json'
 
 const pkg = require('./package.json')
 
-const libraryName = 'chat-js-client'
+const libraryName = 'chat-client'
 
 export default {
   input: `src/${libraryName}.ts`,
