@@ -12,7 +12,7 @@
   "author": "Tanveer Hassan <tanveer.hassan@sekai-lab-bd.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+http://gitlab.monstar-lab.com.bd/chat-service/chat-js-client.git"
   },
   "license": "MIT",
   "engines": {
