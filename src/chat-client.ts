@@ -2,6 +2,10 @@
 // import "core-js/fn/array.find"
 // ...
 
+import 'core-js/fn/array/find'
+import 'core-js/fn/string/includes'
+import 'core-js/fn/promise'
+
 import * as request from 'request-promise-native'
 
 import { TokenProvider } from './token-provider'
