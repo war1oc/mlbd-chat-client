@@ -1,12 +1,4 @@
-// Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-// import "core-js/fn/array.find"
-// ...
-
-import 'core-js/fn/array/find'
-import 'core-js/fn/string/includes'
-import 'core-js/fn/promise'
-
-import * as request from 'request-promise-native'
+import request from 'request-promise-native'
 
 import { TokenProvider } from './token-provider'
 
@@ -22,7 +14,8 @@ export class ChatClient {
   public async getMyGroups() {
     const token = await this.tokenProvider.getAuthToken()
 
-    const result = await request.post({
+    const result = await request({
+      method: 'POST',
       uri: `${this.options.chatApiEndpoint}/groups.list`,
       body: { token }
     })
@@ -33,7 +26,8 @@ export class ChatClient {
   public async sendMessage(groupId: string, message: string) {
     const token = await this.tokenProvider.getAuthToken()
 
-    const result = await request.post({
+    const result = await request({
+      method: 'POST',
       uri: `${this.options.chatApiEndpoint}/messages.send`,
       body: { token, group_id: groupId, message }
     })
@@ -53,7 +47,8 @@ export class ChatClient {
       uri += `skip_till_time=${skipTillTime}`
     }
 
-    const result = await request.post({
+    const result = await request({
+      method: 'POST',
       uri: uri,
       body: { token, group_id: groupId }
     })

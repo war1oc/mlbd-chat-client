@@ -4,10 +4,12 @@ import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
 import typescript from 'rollup-plugin-typescript2'
 import json from 'rollup-plugin-json'
+import globals from 'rollup-plugin-node-globals'
+import builtins from 'rollup-plugin-node-builtins'
 
 const pkg = require('./package.json')
 
-const libraryName = 'chat-client'
+const libraryName = 'index'
 
 export default {
   input: `src/${libraryName}.ts`,
@@ -21,6 +23,8 @@ export default {
     include: 'src/**',
   },
   plugins: [
+    globals(),
+    builtins(),
     // Allow json resolution
     json(),
     // Compile TypeScript files

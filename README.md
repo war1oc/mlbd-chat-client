@@ -1,4 +1,6 @@
-# MLBD Chat Client
+# MLBD Chat Client 
+
+[![Build Status](https://travis-ci.org/war1oc/mlbd-chat-client.svg?branch=master)](https://travis-ci.org/war1oc/mlbd-chat-client)
 
 Javascript chat client for MLBD Chat Service.
 
@@ -112,7 +114,7 @@ This makes more sense in combination with [automatic releases](#automatic-releas
 
 ### FAQ
 
-#### `Array.prototype.from`, `Promise`, `Map`... is undefined?
+#### `Array.prototype.from`, `Promise`, `Map`... is undefined
 
 TypeScript or Babel only provides down-emits on syntactical features (`class`, `let`, `async/await`...), but not on functional features (`Array.prototype.find`, `Set`, `Promise`...), . For that, you need Polyfills, such as [`core-js`](https://github.com/zloirock/core-js) or [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/) (which extends `core-js`).
 
