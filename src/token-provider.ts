@@ -1,37 +1,49 @@
-import request from 'request-promise-native'
 import jwt_decode from 'jwt-decode'
+import xhr from 'xhr'
 
 export class TokenProvider {
   private options: TokenProviderOptions
-  private chatUserToken: string
+  private chatUserToken: any
 
   constructor(options: TokenProviderOptions) {
     this.options = options
     this.chatUserToken = ''
   }
 
-  public async getAuthToken() {
+  public async getAuthToken(): Promise<any> {
     if (!this.chatUserToken) {
-      await this.fetchAuthToken()
+      this.chatUserToken = await this.fetchAuthToken()
+      return this.chatUserToken
     }
 
     const token: any = jwt_decode(this.chatUserToken)
     if (Date.now() >= token.exp * 1000) {
-      await this.fetchAuthToken()
+      this.chatUserToken = await this.fetchAuthToken()
     }
 
     return this.chatUserToken
   }
 
-  private async fetchAuthToken() {
+  private async fetchAuthToken(): Promise<any> {
     const headers = await this.options.getHeaders()
-    const result = await request({
-      method: 'POST',
-      uri: this.options.url,
-      headers: headers
-    })
 
-    this.chatUserToken = result['access_token']
+    return new Promise((resolve, reject) => {
+      xhr(
+        {
+          method: 'POST',
+          uri: `${this.options.url}`,
+          headers: headers,
+          json: true
+        },
+        (err, resp, body) => {
+          if (err) {
+            return reject(err)
+          }
+
+          return resolve(body['access_token'])
+        }
+      )
+    })
   }
 }
 

@@ -25,7 +25,7 @@ const chatClient = new ChatClient({
     url: "https://my-api/auth/chat",
     getHeaders: () => {
       // return a headers object your endpoint requires
-      return { Authorization: "Bearer <ACCESS_TOKEN>" }
+      return Promise.resolve({ Authorization: "Bearer <ACCESS_TOKEN>" })
     }
   })
 });
