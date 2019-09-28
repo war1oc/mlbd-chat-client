@@ -1,4 +1,4 @@
-# MLBD Chat Client 
+# MLBD Chat Client
 
 [![Build Status](https://travis-ci.org/war1oc/mlbd-chat-client.svg?branch=master)](https://travis-ci.org/war1oc/mlbd-chat-client)
 
@@ -17,7 +17,7 @@ npm i @mlbd/chat-client
 Initialize the client:
 
 ```javascript
-import { ChatClient } from '@mlbd/chat-client'
+import { ChatClient, TokenProvider } from '@mlbd/chat-client'
 
 const chatClient = new ChatClient({
   chatApiEndpoint: "https://my-chat-api",
