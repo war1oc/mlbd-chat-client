@@ -1,5 +1,4 @@
-import xhr from 'xhr'
-
+import { post } from './request'
 import { TokenProvider } from './token-provider'
 
 export class ChatClient {
@@ -13,45 +12,15 @@ export class ChatClient {
 
   public async getMyGroups() {
     const token = await this.tokenProvider.getAuthToken()
-
-    return new Promise((resolve, reject) => {
-      xhr(
-        {
-          method: 'POST',
-          uri: `${this.options.chatApiEndpoint}/groups.list`,
-          json: true,
-          body: { token: token }
-        },
-        (err, resp, body) => {
-          if (err) {
-            return reject(err)
-          }
-
-          return resolve(body)
-        }
-      )
-    })
+    return post(`${this.options.chatApiEndpoint}/groups.list`, { token })
   }
 
   public async sendMessage(groupId: string, message: string) {
     const token = await this.tokenProvider.getAuthToken()
-
-    return new Promise((resolve, reject) => {
-      xhr(
-        {
-          method: 'POST',
-          uri: `${this.options.chatApiEndpoint}/messages.send`,
-          json: true,
-          body: { token, group_id: groupId, message }
-        },
-        (err, resp, body) => {
-          if (err) {
-            return reject(err)
-          }
-
-          return resolve(body)
-        }
-      )
+    return post(`${this.options.chatApiEndpoint}/messages.send`, {
+      token,
+      group_id: groupId,
+      message
     })
   }
 
@@ -67,23 +36,12 @@ export class ChatClient {
       uri += `skip_till_time=${skipTillTime}`
     }
 
-    return new Promise((resolve, reject) => {
-      xhr(
-        {
-          method: 'POST',
-          uri: uri,
-          json: true,
-          body: { token, group_id: groupId }
-        },
-        (err, resp, body) => {
-          if (err) {
-            return reject(err)
-          }
+    return post(uri, { token, group_id: groupId })
+  }
 
-          return resolve(body)
-        }
-      )
-    })
+  public async getMyStats() {
+    const token = await this.tokenProvider.getAuthToken()
+    return post(`${this.options.chatApiEndpoint}/users.stats`, { token })
   }
 }
 

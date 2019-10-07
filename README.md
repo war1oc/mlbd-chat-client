@@ -49,6 +49,12 @@ const messages = await chatClient.getGroupMessages("<group_id>");
 const messages = await chatClient.sendMessage("<group_id>", "hello, world!");
 ```
 
+### Get my stats
+
+```javascript
+const stats = await chatClient.getMyStats();
+```
+
 ## Developing
 
 ### NPM scripts
