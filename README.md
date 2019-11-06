@@ -20,39 +20,45 @@ Initialize the client:
 import { ChatClient, TokenProvider } from '@mlbd/chat-client'
 
 const chatClient = new ChatClient({
-  chatApiEndpoint: "https://my-chat-api",
+  chatApiEndpoint: 'https://my-chat-api',
   tokenProvider: new TokenProvider({
-    url: "https://my-api/auth/chat",
+    url: 'https://my-api/auth/chat',
     getHeaders: () => {
       // return a headers object your endpoint requires
-      return Promise.resolve({ Authorization: "Bearer <ACCESS_TOKEN>" })
+      return Promise.resolve({ Authorization: 'Bearer <ACCESS_TOKEN>' })
     }
   })
-});
+})
 ```
 
 ### Get my groups
 
 ```javascript
-const myGroups = await chatClient.getMyGroups();
+const myGroups = await chatClient.getMyGroups()
 ```
 
 ### Get group messages
 
 ```javascript
-const messages = await chatClient.getGroupMessages("<group_id>");
+const messages = await chatClient.getGroupMessages('<group_id>')
 ```
 
 ### Send message to a group
 
 ```javascript
-const messages = await chatClient.sendMessage("<group_id>", "hello, world!");
+const messages = await chatClient.sendMessage({"<group_id>", "hello, world!", [
+    {
+      title: "Laika - the dog",
+      mime_type: "image/jpeg",
+      url: "https://domain/laika.jpeg"
+    }
+  ]});
 ```
 
 ### Get my stats
 
 ```javascript
-const stats = await chatClient.getMyStats();
+const stats = await chatClient.getMyStats()
 ```
 
 ## Developing
