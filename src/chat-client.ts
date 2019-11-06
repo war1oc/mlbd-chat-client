@@ -1,6 +1,18 @@
 import { post } from './request'
 import { TokenProvider } from './token-provider'
 
+export interface IAttachmentOptions {
+  title: string
+  mime_type: string
+  url: string
+}
+
+export interface ISendMessageOptions {
+  groupId: string
+  message: string
+  attachments: IAttachmentOptions[]
+}
+
 export class ChatClient {
   private options: ChatClientOptions
   private tokenProvider: TokenProvider
@@ -15,12 +27,14 @@ export class ChatClient {
     return post(`${this.options.chatApiEndpoint}/groups.list`, { token })
   }
 
-  public async sendMessage(groupId: string, message: string) {
+  public async sendMessage(sendMessageOptions: ISendMessageOptions) {
     const token = await this.tokenProvider.getAuthToken()
+    const { groupId, message, attachments } = sendMessageOptions
     return post(`${this.options.chatApiEndpoint}/messages.send`, {
       token,
       group_id: groupId,
-      message
+      message,
+      attachments
     })
   }
 
