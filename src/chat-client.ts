@@ -47,7 +47,7 @@ export class ChatClient {
     }
 
     if (skipTillTime) {
-      uri += `skip_till_time=${skipTillTime}`
+      uri += `${limit ? '&' : ''}skip_till_time=${skipTillTime}`
     }
 
     return post(uri, { token, group_id: groupId })
