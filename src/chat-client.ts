@@ -9,8 +9,8 @@ export interface IAttachmentOptions {
 
 export interface ISendMessageOptions {
   groupId: string
-  message: string
-  attachments: IAttachmentOptions[]
+  message?: string
+  attachments?: IAttachmentOptions[]
 }
 
 export class ChatClient {
@@ -30,6 +30,11 @@ export class ChatClient {
   public async sendMessage(sendMessageOptions: ISendMessageOptions) {
     const token = await this.tokenProvider.getAuthToken()
     const { groupId, message, attachments } = sendMessageOptions
+
+    if (!message && (!attachments || !attachments.length)) {
+      throw new Error('Either message or attachments is required.')
+    }
+
     return post(`${this.options.chatApiEndpoint}/messages.send`, {
       token,
       group_id: groupId,
