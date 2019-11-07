@@ -1,8 +1,8 @@
 # MLBD Chat Client
 
-[![Build Status](https://travis-ci.org/war1oc/mlbd-chat-client.svg?branch=master)](https://travis-ci.org/war1oc/mlbd-chat-client)
-
 Javascript chat client for MLBD Chat Service.
+
+[![Build Status](https://travis-ci.org/war1oc/mlbd-chat-client.svg?branch=master)](https://travis-ci.org/war1oc/mlbd-chat-client)
 
 ## Usage
 
@@ -27,7 +27,12 @@ const chatClient = new ChatClient({
       // return a headers object your endpoint requires
       return Promise.resolve({ Authorization: "Bearer <ACCESS_TOKEN>" })
     }
-  })
+  }),
+  pusherOptions: {
+    appKey: '<PUSHER_APP_KEY>',
+    cluster: '<PUSHER_APP_CLUSTER>',
+    forceTLS: true
+  }
 });
 ```
 
@@ -62,6 +67,52 @@ const messages = await chatClient.sendMessage({
 
 ```javascript
 const stats = await chatClient.getMyStats();
+```
+
+### Hooks
+
+When a user logs in:
+
+```javascript
+await chatClient.connect()
+```
+
+When a user logs out:
+
+```javascript
+await chatClient.disconnect()
+```
+
+#### Message Received
+
+```javascript
+chatClient.onMessageRecieved((data: any) => {
+  // You have a new message!
+});
+```
+
+#### Added To A Group
+
+```javascript
+chatClient.onAddedToGroup((data: any) => {
+  // You have been added to a group!
+});
+```
+
+#### Group Updated
+
+```javascript
+chatClient.onGroupUpdated((data: any) => {
+  // A group you are in has been updated!
+});
+```
+
+#### Group Deleted
+
+```javascript
+chatClient.onGroupDeleted((data: any) => {
+  // A group you were in has been deleted!
+});
 ```
 
 ## Developing
