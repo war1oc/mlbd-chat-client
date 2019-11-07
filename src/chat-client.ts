@@ -1,5 +1,6 @@
 import { post } from './request'
 import { TokenProvider } from './token-provider'
+import { PusherProvider } from './pusher'
 
 export interface IAttachmentOptions {
   title: string
@@ -16,10 +17,12 @@ export interface ISendMessageOptions {
 export class ChatClient {
   private options: ChatClientOptions
   private tokenProvider: TokenProvider
+  private pusherProvider: PusherProvider
 
   constructor(options: ChatClientOptions) {
     this.options = options
     this.tokenProvider = options.tokenProvider
+    this.pusherProvider = options.pusherProvider
   }
 
   public async getMyGroups() {
@@ -62,4 +65,5 @@ export class ChatClient {
 export interface ChatClientOptions {
   chatApiEndpoint: string
   tokenProvider: TokenProvider
+  pusherProvider: PusherProvider
 }
