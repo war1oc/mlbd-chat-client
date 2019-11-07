@@ -22,7 +22,12 @@ export class ChatClient {
   constructor(options: ChatClientOptions) {
     this.options = options
     this.tokenProvider = options.tokenProvider
-    this.pusherProvider = options.pusherProvider
+
+    this.pusherProvider = new PusherProvider({
+      ...options.pusherOptions,
+      authEndpoint: `${this.options.chatApiEndpoint}/channel.auth`,
+      tokenProvider: this.tokenProvider
+    })
   }
 
   public async getMyGroups() {
@@ -60,10 +65,41 @@ export class ChatClient {
     const token = await this.tokenProvider.getAuthToken()
     return post(`${this.options.chatApiEndpoint}/users.stats`, { token })
   }
+
+  public async connect() {
+    const userId = await this.tokenProvider.getUserId()
+    await this.pusherProvider.connect(userId)
+  }
+
+  public async disconnect() {
+    this.pusherProvider.disconnect()
+  }
+
+  public onMessageRecieved(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:message_received', cb)
+  }
+
+  public onAddedToGroup(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:added_to_group', cb)
+  }
+
+  public onGroupUpdated(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:group_updated', cb)
+  }
+
+  public onGroupDeleted(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:group_deleted', cb)
+  }
+}
+
+export interface PusherOptions {
+  appKey: string
+  cluster: string
+  forceTLS: boolean
 }
 
 export interface ChatClientOptions {
   chatApiEndpoint: string
   tokenProvider: TokenProvider
-  pusherProvider: PusherProvider
+  pusherOptions: PusherOptions
 }

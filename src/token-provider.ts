@@ -24,6 +24,12 @@ export class TokenProvider {
     return this.chatUserToken
   }
 
+  public async getUserId(): Promise<any> {
+    const chatUserToken = await this.getAuthToken()
+    const decodedToken: any = jwt_decode(chatUserToken)
+    return decodedToken.user_id
+  }
+
   private async fetchAuthToken(): Promise<any> {
     const headers = await this.options.getHeaders()
 
