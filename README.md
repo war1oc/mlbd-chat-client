@@ -74,13 +74,13 @@ const stats = await chatClient.getMyStats();
 When a user logs in:
 
 ```javascript
-await chatClient.connect()
+await chatClient.connect();
 ```
 
 When a user logs out:
 
 ```javascript
-await chatClient.disconnect()
+await chatClient.disconnect();
 ```
 
 #### Message Received
