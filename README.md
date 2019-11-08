@@ -51,10 +51,10 @@ const messages = await chatClient.getGroupMessages("<group_id>");
 ### Send message to a group
 
 ```javascript
-// message and attachments both are optional but one of them must be provided.
+// either message or attachments must be provided.
 const messages = await chatClient.sendMessage({
-  groupId: "<group_id>", 
-  message: "hello, world!", 
+  groupId: "<group_id>",
+  message: "hello, world!",
   attachments: [{
     title: "Laika - the dog",
     mime_type: "image/jpeg",
