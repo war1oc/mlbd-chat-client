@@ -95,6 +95,26 @@ export class ChatClient {
   public onGroupDeleted(cb: (data: any) => void) {
     this.pusherProvider.bind('chat:group_deleted', cb)
   }
+
+  public onGroupMemberAdded(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:group_member_added', cb)
+  }
+
+  public onGroupMemberRemoved(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:group_member_removed', cb)
+  }
+
+  public onMessageDeleted(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:message_deleted', cb)
+  }
+
+  public onMessageRead(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:message_read', cb)
+  }
+
+  public onMessageUpdated(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:message_updated', cb)
+  }
 }
 
 export interface PusherOptions {
