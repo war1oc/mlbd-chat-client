@@ -59,7 +59,8 @@ const messages = await chatClient.sendMessage({
     title: "Laika - the dog",
     mime_type: "image/jpeg",
     url: "https://domain/laika.jpeg"
-  }]
+  }],
+  parentMessageId: "<parent_message_id>"
 });
 ```
 
@@ -153,6 +154,46 @@ chatClient.onMessageRead((data: any) => {
 chatClient.onMessageUpdated((data: any) => {
   // A message has been updated in a group where you're in!
 });
+```
+
+#### Group Member Added
+
+```javascript
+chatClient.onGroupMemberAdded((data: any) => {
+  // A new member has been added to a group where you're in!
+});
+```
+
+#### Group Member Added
+
+```javascript
+chatClient.onGroupMemberRemoved((data: any) => {
+  // A member has been removed from a group where you're in!
+});
+```
+
+#### Message Deleted
+
+```javascript
+chatClient.onMessageDeleted((data: any) => {
+  // A message has been deleted from a group where you're in!
+});
+```
+
+#### Message Read
+
+```javascript
+chatClient.onMessageRead((data: any) => {
+  // A message has been read in a group where you're in!
+});
+```
+
+#### Message Read
+
+```javascript
+chatClient.onMessageUpdated((data: any) => {
+  // A message has been updated in a group where you're in!
+
 ```
 
 ## Developing

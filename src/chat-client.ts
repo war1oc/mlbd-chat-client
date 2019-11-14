@@ -37,7 +37,7 @@ export class ChatClient {
 
   public async sendMessage(sendMessageOptions: ISendMessageOptions) {
     const token = await this.tokenProvider.getAuthToken()
-    const { groupId, message, attachments } = sendMessageOptions
+    const { groupId, message, attachments, parentMessageId } = sendMessageOptions
 
     if (!message && (!attachments || !attachments.length)) {
       throw new Error('Either message or attachments is required.')
@@ -47,7 +47,8 @@ export class ChatClient {
       token,
       group_id: groupId,
       message,
-      attachments
+      attachments,
+      parent_message_id: parentMessageId
     })
   }
 
