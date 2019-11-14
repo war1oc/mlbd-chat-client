@@ -12,6 +12,7 @@ export interface ISendMessageOptions {
   groupId: string
   message?: string
   attachments?: IAttachmentOptions[]
+  parentMessageId?: string
 }
 
 export class ChatClient {
