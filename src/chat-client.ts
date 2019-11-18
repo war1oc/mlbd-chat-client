@@ -13,6 +13,7 @@ export interface ISendMessageOptions {
   message?: string
   attachments?: IAttachmentOptions[]
   parentMessageId?: string
+  mentions?: string[]
 }
 
 export class ChatClient {
@@ -38,7 +39,7 @@ export class ChatClient {
 
   public async sendMessage(sendMessageOptions: ISendMessageOptions) {
     const token = await this.tokenProvider.getAuthToken()
-    const { groupId, message, attachments, parentMessageId } = sendMessageOptions
+    const { groupId, message, attachments, parentMessageId, mentions } = sendMessageOptions
 
     if (!message && (!attachments || !attachments.length)) {
       throw new Error('Either message or attachments is required.')
@@ -49,7 +50,8 @@ export class ChatClient {
       group_id: groupId,
       message,
       attachments,
-      parent_message_id: parentMessageId
+      parent_message_id: parentMessageId,
+      mentions
     })
   }
 
