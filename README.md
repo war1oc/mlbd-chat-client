@@ -60,7 +60,8 @@ const messages = await chatClient.sendMessage({
     mime_type: "image/jpeg",
     url: "https://domain/laika.jpeg"
   }],
-  parentMessageId: "<parent_message_id>"
+  parentMessageId: "<parent_message_id>",
+  mentions: ["2", "3"]
 });
 ```
 
