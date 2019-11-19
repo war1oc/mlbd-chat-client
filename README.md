@@ -53,8 +53,8 @@ const messages = await chatClient.getGroupMessages("<group_id>");
 ```javascript
 // message and attachments both are optional but one of them must be provided.
 const messages = await chatClient.sendMessage({
-  groupId: "<group_id>", 
-  message: "hello, world!", 
+  groupId: "<group_id>",
+  message: "hello, world!",
   attachments: [{
     title: "Laika - the dog",
     mime_type: "image/jpeg",
@@ -124,7 +124,7 @@ chatClient.onGroupMemberAdded((data: any) => {
 });
 ```
 
-#### Group Member Added
+#### Group Member Removed
 
 ```javascript
 chatClient.onGroupMemberRemoved((data: any) => {
@@ -148,52 +148,12 @@ chatClient.onMessageRead((data: any) => {
 });
 ```
 
-#### Message Read
+#### Message Updated
 
 ```javascript
 chatClient.onMessageUpdated((data: any) => {
   // A message has been updated in a group where you're in!
 });
-```
-
-#### Group Member Added
-
-```javascript
-chatClient.onGroupMemberAdded((data: any) => {
-  // A new member has been added to a group where you're in!
-});
-```
-
-#### Group Member Added
-
-```javascript
-chatClient.onGroupMemberRemoved((data: any) => {
-  // A member has been removed from a group where you're in!
-});
-```
-
-#### Message Deleted
-
-```javascript
-chatClient.onMessageDeleted((data: any) => {
-  // A message has been deleted from a group where you're in!
-});
-```
-
-#### Message Read
-
-```javascript
-chatClient.onMessageRead((data: any) => {
-  // A message has been read in a group where you're in!
-});
-```
-
-#### Message Read
-
-```javascript
-chatClient.onMessageUpdated((data: any) => {
-  // A message has been updated in a group where you're in!
-
 ```
 
 ## Developing
