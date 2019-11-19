@@ -51,7 +51,7 @@ const messages = await chatClient.getGroupMessages("<group_id>");
 ### Send message to a group
 
 ```javascript
-// message and attachments both are optional but one of them must be provided.
+// either message or attachments must be provided.
 const messages = await chatClient.sendMessage({
   groupId: "<group_id>",
   message: "hello, world!",
@@ -76,13 +76,13 @@ const stats = await chatClient.getMyStats();
 When a user logs in:
 
 ```javascript
-await chatClient.connect()
+await chatClient.connect();
 ```
 
 When a user logs out:
 
 ```javascript
-await chatClient.disconnect()
+await chatClient.disconnect();
 ```
 
 #### Message Received
