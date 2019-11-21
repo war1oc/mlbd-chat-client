@@ -16,6 +16,10 @@ export interface ISendMessageOptions {
   mentions?: string[]
 }
 
+export interface IMarkGroupAsReadOptions {
+  groupId: string
+}
+
 export class ChatClient {
   private options: ChatClientOptions
   private tokenProvider: TokenProvider
@@ -73,6 +77,20 @@ export class ChatClient {
   public async getMyStats() {
     const token = await this.tokenProvider.getAuthToken()
     return post(`${this.options.chatApiEndpoint}/users.stats`, { token })
+  }
+
+  public async markGroupAsRead(markGroupAsReadOptions: IMarkGroupAsReadOptions) {
+    const token = await this.tokenProvider.getAuthToken()
+    const { groupId } = markGroupAsReadOptions
+
+    if (!groupId) {
+      throw new Error('groupId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.read`, {
+      token,
+      group_id: groupId
+    })
   }
 
   public async connect() {

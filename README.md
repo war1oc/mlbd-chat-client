@@ -71,6 +71,12 @@ const messages = await chatClient.sendMessage({
 const stats = await chatClient.getMyStats();
 ```
 
+### Mark group as read
+
+```javascript
+const markGroupAsRead = await chatClient.markGroupAsRead();
+```
+
 ### Hooks
 
 When a user logs in:
