@@ -80,7 +80,7 @@ const markGroupAsRead = await chatClient.markGroupAsRead({ groupId: "<group_id>"
 ### Delete message
 
 ```javascript
-const deleteMessage = await chatClient.deleteMessage({ messageId: "<message_id>"});
+const deleteMessage = await chatClient.deleteMessage("<message_id>");
 ```
 
 ### Hooks
