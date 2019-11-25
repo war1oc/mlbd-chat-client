@@ -93,6 +93,19 @@ export class ChatClient {
     })
   }
 
+  public async deleteMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.delete`, {
+      token,
+      message_id: messageId
+    })
+  }
+
   public async connect() {
     const userId = await this.tokenProvider.getUserId()
     await this.pusherProvider.connect(userId)
