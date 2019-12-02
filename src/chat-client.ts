@@ -117,6 +117,19 @@ export class ChatClient {
       token,
       group_id: groupId
     })
+  };
+
+  public async getMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.get`, {
+      token,
+      message_id: messageId
+    })
   }
 
   public async connect() {

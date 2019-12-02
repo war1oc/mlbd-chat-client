@@ -89,6 +89,12 @@ const deleteMessage = await chatClient.deleteMessage("<message_id>");
 const getGroup = await chatClient.getGroup("<group_id>");
 ```
 
+### Get message
+
+```javascript
+const getMessage = await chatClient.getMessage("<message_id>");
+```
+
 ### Hooks
 
 When a user logs in:
