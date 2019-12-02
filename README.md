@@ -83,6 +83,12 @@ const markGroupAsRead = await chatClient.markGroupAsRead({ groupId: "<group_id>"
 const deleteMessage = await chatClient.deleteMessage("<message_id>");
 ```
 
+### Get group
+
+```javascript
+const getGroup = await chatClient.getGroup("<group_id>");
+```
+
 ### Hooks
 
 When a user logs in:
