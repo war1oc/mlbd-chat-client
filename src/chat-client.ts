@@ -106,6 +106,32 @@ export class ChatClient {
     })
   }
 
+  public async getGroup(groupId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!groupId) {
+      throw new Error('groupId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/groups.get`, {
+      token,
+      group_id: groupId
+    })
+  };
+
+  public async getMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.get`, {
+      token,
+      message_id: messageId
+    })
+  }
+
   public async connect() {
     const userId = await this.tokenProvider.getUserId()
     await this.pusherProvider.connect(userId)
