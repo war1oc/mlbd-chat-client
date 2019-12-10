@@ -95,6 +95,12 @@ const getGroup = await chatClient.getGroup("<group_id>");
 const getMessage = await chatClient.getMessage("<message_id>");
 ```
 
+### Search messages
+
+```javascript
+const searchMessages = await chatClient.searchMessages("<keyword>");
+```
+
 ### Hooks
 
 When a user logs in:
