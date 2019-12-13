@@ -98,7 +98,7 @@ const getMessage = await chatClient.getMessage("<message_id>");
 ### Search messages
 
 ```javascript
-const searchMessages = await chatClient.searchMessages("<keyword>");
+const searchMessages = await chatClient.searchMessages("<keyword>", "<limit>", "<skipTillTime>");
 ```
 
 ### Hooks
