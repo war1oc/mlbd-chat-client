@@ -132,17 +132,24 @@ export class ChatClient {
     })
   }
 
-  public async searchMessages(keyword: string) {
+  public async searchMessages(keyword: string, limit?: number, skipTillTime?: Date) {
     const token = await this.tokenProvider.getAuthToken()
+
+    let uri = `${this.options.chatApiEndpoint}/messages.search?`
+
+    if (limit) {
+      uri += `limit=${limit}`
+    }
+
+    if (skipTillTime) {
+      uri += `${limit ? '&' : ''}skip_till_time=${skipTillTime}`
+    }
 
     if (!keyword) {
       throw new Error('keyword is required.')
     }
 
-    return post(`${this.options.chatApiEndpoint}/messages.search`, {
-      token,
-      keyword
-    })
+    return post(uri, { token, keyword })
   }
 
   public async connect() {
