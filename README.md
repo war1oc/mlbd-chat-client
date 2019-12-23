@@ -101,6 +101,12 @@ const getMessage = await chatClient.getMessage("<message_id>");
 const searchMessages = await chatClient.searchMessages("<keyword>", "<limit>", "<skipTillTime>");
 ```
 
+### Get group attachments
+
+```javascript
+const getGroupAttachments = await chatClient.getGroupAttachments("<groupId>", "<limit>", "<skipTillTime>");
+```
+
 ### Hooks
 
 When a user logs in:
