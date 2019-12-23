@@ -152,6 +152,26 @@ export class ChatClient {
     return post(uri, { token, keyword })
   }
 
+  public async getGroupAttachments(groupId: string, limit?: number, skipTillTime?: Date) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    let uri = `${this.options.chatApiEndpoint}/attachments.list?`
+
+    if (limit) {
+      uri += `limit=${limit}`
+    }
+
+    if (skipTillTime) {
+      uri += `${limit ? '&' : ''}skip_till_time=${skipTillTime}`
+    }
+
+    if (!groupId) {
+      throw new Error('groupId is required.')
+    }
+
+    return post(uri, { token, group_id: groupId })
+  }
+
   public async connect() {
     const userId = await this.tokenProvider.getUserId()
     await this.pusherProvider.connect(userId)
