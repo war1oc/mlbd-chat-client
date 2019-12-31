@@ -152,7 +152,7 @@ export class ChatClient {
     return post(uri, { token, keyword })
   }
 
-  public async getGroupAttachments(groupId: string, limit?: number, skipTillTime?: Date) {
+  public async getGroupAttachments(groupId: string, limit?: number, offset?: number) {
     const token = await this.tokenProvider.getAuthToken()
 
     let uri = `${this.options.chatApiEndpoint}/attachments.list?`
@@ -161,8 +161,8 @@ export class ChatClient {
       uri += `limit=${limit}`
     }
 
-    if (skipTillTime) {
-      uri += `${limit ? '&' : ''}skip_till_time=${skipTillTime}`
+    if (offset) {
+      uri += `${limit ? '&' : ''}offset=${offset}`
     }
 
     if (!groupId) {
