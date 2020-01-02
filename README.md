@@ -22,10 +22,17 @@ import { ChatClient, TokenProvider } from '@mlbd/chat-client'
 const chatClient = new ChatClient({
   chatApiEndpoint: "https://my-chat-api",
   tokenProvider: new TokenProvider({
+    // This is a POST request configuration for fetching chat token
     url: "https://my-api/auth/chat",
     getHeaders: () => {
+      // Optional
       // return a headers object your endpoint requires
       return Promise.resolve({ Authorization: "Bearer <ACCESS_TOKEN>" })
+    },
+    getBody: () => {
+      // Optional
+      // return a body object your endpoint requires
+      return Promise.resolve({ key: "value" })
     }
   }),
   pusherOptions: {

@@ -31,7 +31,8 @@ export class TokenProvider {
   }
 
   private async fetchAuthToken(): Promise<any> {
-    const headers = await this.options.getHeaders()
+    const headers = this.options.getHeaders && (await this.options.getHeaders())
+    const body = this.options.getBody && (await this.options.getBody())
 
     return new Promise((resolve, reject) => {
       xhr(
@@ -39,7 +40,8 @@ export class TokenProvider {
           method: 'POST',
           uri: `${this.options.url}`,
           headers: headers,
-          json: true
+          json: true,
+          body: body
         },
         (err, resp, body) => {
           if (err) {
@@ -55,5 +57,6 @@ export class TokenProvider {
 
 export interface TokenProviderOptions {
   url: string
-  getHeaders(): Promise<any>
+  getHeaders?(): Promise<any>
+  getBody?(): Promise<any>
 }
