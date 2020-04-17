@@ -172,6 +172,92 @@ export class ChatClient {
     return post(uri, { token, group_id: groupId })
   }
 
+  public async addPinnedMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.pinned.add`, {
+      token,
+      message_id: messageId
+    })
+  }
+
+  public async removePinnedMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.pinned.remove`, {
+      token,
+      message_id: messageId
+    })
+  }
+
+  public async getGroupPinnedMessages(groupId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!groupId) {
+      throw new Error('groupId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/groups.messages.pinned.list`, {
+      token,
+      group_id: groupId
+    })
+  }
+
+  public async addSavedMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.saved.add`, {
+      token,
+      message_id: messageId
+    })
+  }
+
+  public async removeSavedMessage(messageId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!messageId) {
+      throw new Error('messageId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/messages.saved.remove`, {
+      token,
+      message_id: messageId
+    })
+  }
+
+  public async getSavedMessages() {
+    const token = await this.tokenProvider.getAuthToken()
+
+    return post(`${this.options.chatApiEndpoint}/messages.saved.list`, {
+      token
+    })
+  }
+
+  public async getGroupSavedMessages(groupId: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    if (!groupId) {
+      throw new Error('groupId is required.')
+    }
+
+    return post(`${this.options.chatApiEndpoint}/groups.messages.saved.list`, {
+      token,
+      group_id: groupId
+    })
+  }
+
   public async connect() {
     const userId = await this.tokenProvider.getUserId()
     await this.pusherProvider.connect(userId)

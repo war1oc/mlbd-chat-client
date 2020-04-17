@@ -111,7 +111,49 @@ const searchMessages = await chatClient.searchMessages("<keyword>", "<limit>", "
 ### Get group attachments
 
 ```javascript
-const getGroupAttachments = await chatClient.getGroupAttachments("<groupId>", "<limit>", "<offset>");
+const getGroupAttachments = await chatClient.getGroupAttachments("<group_id>", "<limit>", "<offset>");
+```
+
+### Add pinned message
+
+```javascript
+await chatClient.addPinnedMessage("<message_id>");
+```
+
+### Remove pinned message
+
+```javascript
+await chatClient.removePinnedMessage("<message_id>");
+```
+
+### Get group pinned messages
+
+```javascript
+const messages = await chatClient.getGroupPinnedMessages("<group_id>");
+```
+
+### Add saved message
+
+```javascript
+await chatClient.addSavedMessage("<message_id>");
+```
+
+### Remove saved message
+
+```javascript
+await chatClient.removeSavedMessage("<message_id>");
+```
+
+### Get saved messages
+
+```javascript
+const messages = await chatClient.getSavedMessages();
+```
+
+### Get group saved messages
+
+```javascript
+const messages = await chatClient.getGroupSavedMessages("<group_id>");
 ```
 
 ### Hooks
