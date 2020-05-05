@@ -20,6 +20,13 @@ export interface IMarkGroupAsReadOptions {
   groupId: string
 }
 
+export interface ISearchMessagesOptions {
+  keyword: string
+  groupId?: string
+  limit?: number
+  offset?: number
+}
+
 export class ChatClient {
   private options: ChatClientOptions
   private tokenProvider: TokenProvider
@@ -132,24 +139,32 @@ export class ChatClient {
     })
   }
 
-  public async searchMessages(keyword: string, limit?: number, skipTillTime?: Date) {
+  public async searchMessages(options: ISearchMessagesOptions) {
     const token = await this.tokenProvider.getAuthToken()
 
     let uri = `${this.options.chatApiEndpoint}/messages.search?`
+
+    const { limit, offset, keyword, groupId } = options
 
     if (limit) {
       uri += `limit=${limit}`
     }
 
-    if (skipTillTime) {
-      uri += `${limit ? '&' : ''}skip_till_time=${skipTillTime}`
+    if (offset) {
+      uri += `${limit ? '&' : ''}offset=${offset}`
     }
 
     if (!keyword) {
       throw new Error('keyword is required.')
     }
 
-    return post(uri, { token, keyword })
+    const body: any = { token, keyword }
+
+    if (groupId) {
+      body.group_id = groupId
+    }
+
+    return post(uri, body)
   }
 
   public async getGroupAttachments(groupId: string, limit?: number, offset?: number) {

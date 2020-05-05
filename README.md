@@ -81,37 +81,47 @@ const stats = await chatClient.getMyStats();
 ### Mark group as read
 
 ```javascript
-const markGroupAsRead = await chatClient.markGroupAsRead({ groupId: "<group_id>"});
+await chatClient.markGroupAsRead({ groupId: "<group_id>"});
 ```
 
 ### Delete message
 
 ```javascript
-const deleteMessage = await chatClient.deleteMessage("<message_id>");
+await chatClient.deleteMessage("<message_id>");
 ```
 
 ### Get group
 
 ```javascript
-const getGroup = await chatClient.getGroup("<group_id>");
+const group = await chatClient.getGroup("<group_id>");
 ```
 
 ### Get message
 
 ```javascript
-const getMessage = await chatClient.getMessage("<message_id>");
+const message = await chatClient.getMessage("<message_id>");
 ```
 
 ### Search messages
 
 ```javascript
-const searchMessages = await chatClient.searchMessages("<keyword>", "<limit>", "<skipTillTime>");
+const messages = await chatClient.searchMessages({
+  keyword: "<search_keyword>",
+  // groupId is optional, results will be filtered by group if this is passed
+  groupId: "<group_id>",
+  // limit is optional, default: 10
+  limit: 5,
+  // offset is optional, default: 0
+  offset: 5
+});
 ```
+
+`limit` and `offset` are to be used for pagination.
 
 ### Get group attachments
 
 ```javascript
-const getGroupAttachments = await chatClient.getGroupAttachments("<group_id>", "<limit>", "<offset>");
+const groupAttachments = await chatClient.getGroupAttachments("<group_id>", "<limit>", "<offset>");
 ```
 
 ### Add pinned message
