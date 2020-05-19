@@ -252,6 +252,38 @@ chatClient.onMessageUpdated((data: any) => {
 });
 ```
 
+#### Pinned Message Added
+
+```javascript
+chatClient.onPinnedMessageAdded((data: any) => {
+  // A message has been pinned in a group where you're in!
+});
+```
+
+#### Pinned Message Removed
+
+```javascript
+chatClient.onPinnedMessageRemoved((data: any) => {
+  // A message has been unpinned in a group where you're in!
+});
+```
+
+#### Saved Message Added
+
+```javascript
+chatClient.onSavedMessageAdded((data: any) => {
+  // A message has been saved!
+});
+```
+
+#### Saved Message Removed
+
+```javascript
+chatClient.onSavedMessageRemoved((data: any) => {
+  // A message has been unsaved!
+});
+```
+
 ## Developing
 
 ### NPM scripts

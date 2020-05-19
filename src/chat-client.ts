@@ -317,6 +317,22 @@ export class ChatClient {
   public onMessageUpdated(cb: (data: any) => void) {
     this.pusherProvider.bind('chat:message_updated', cb)
   }
+
+  public onPinnedMessageAdded(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:pinned_message_added', cb)
+  }
+
+  public onPinnedMessageRemoved(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:pinned_message_removed', cb)
+  }
+
+  public onSavedMessageAdded(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:saved_message_added', cb)
+  }
+
+  public onSavedMessageRemoved(cb: (data: any) => void) {
+    this.pusherProvider.bind('chat:saved_message_removed', cb)
+  }
 }
 
 export interface PusherOptions {
