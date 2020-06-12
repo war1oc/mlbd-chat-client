@@ -23,3 +23,27 @@ export function post(uri: string, body: any): Promise<any> {
     )
   })
 }
+
+export function put(uri: string, body: any, headers: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    xhr(
+      {
+        method: 'PUT',
+        uri,
+        body,
+        headers
+      },
+      (err, resp, body) => {
+        if (err) {
+          return reject(err)
+        }
+
+        if (resp.statusCode < 200 || resp.statusCode >= 300) {
+          return reject(body)
+        }
+
+        return resolve(body)
+      }
+    )
+  })
+}

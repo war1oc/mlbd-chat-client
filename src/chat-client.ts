@@ -1,4 +1,4 @@
-import { post } from './request'
+import { post, put } from './request'
 import { TokenProvider } from './token-provider'
 import { PusherProvider } from './pusher'
 
@@ -14,6 +14,7 @@ export interface ISendMessageOptions {
   attachments?: IAttachmentOptions[]
   parentMessageId?: string
   mentions?: string[]
+  files?: File[]
 }
 
 export interface IMarkGroupAsReadOptions {
@@ -50,7 +51,15 @@ export class ChatClient {
 
   public async sendMessage(sendMessageOptions: ISendMessageOptions) {
     const token = await this.tokenProvider.getAuthToken()
-    const { groupId, message, attachments, parentMessageId, mentions } = sendMessageOptions
+    let { groupId, message, attachments, parentMessageId, mentions, files } = sendMessageOptions
+
+    if (files && files.length) {
+      const fileUploadPromises = files.map(f => this.uploadAttachment(f))
+      const keys = await Promise.all(fileUploadPromises)
+      attachments = files.map((file, idx) => {
+        return { title: file.name, url: keys[idx], mime_type: file.type }
+      })
+    }
 
     if (!message && (!attachments || !attachments.length)) {
       throw new Error('Either message or attachments is required.')
@@ -332,6 +341,27 @@ export class ChatClient {
 
   public onSavedMessageRemoved(cb: (data: any) => void) {
     this.pusherProvider.bind('chat:saved_message_removed', cb)
+  }
+
+  private async uploadAttachment(file: File) {
+    const { upload_link, key } = await this.getAttachmentUploadUrl(file.name, file.type)
+
+    await put(upload_link, file, {
+      'Content-Type': file.type,
+      'x-amz-meta-file_name': file.name
+    })
+
+    return key
+  }
+
+  private async getAttachmentUploadUrl(fileName: string, mimeType: string) {
+    const token = await this.tokenProvider.getAuthToken()
+
+    return post(`${this.options.chatApiEndpoint}/attachments.upload.url`, {
+      token,
+      file_name: fileName,
+      mime_type: mimeType
+    })
   }
 }
 
