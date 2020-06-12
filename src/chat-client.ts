@@ -282,6 +282,13 @@ export class ChatClient {
     })
   }
 
+  public async getAttachmentDownloadUrl(attachmentId: string): Promise<string> {
+    const token = await this.tokenProvider.getAuthToken()
+
+    const url = `${this.options.chatApiEndpoint}/attachments.file.download?token=${token}&attachment_id=${attachmentId}`
+    return url
+  }
+
   public async connect() {
     const userId = await this.tokenProvider.getUserId()
     await this.pusherProvider.connect(userId)
