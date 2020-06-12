@@ -28,6 +28,12 @@ export interface ISearchMessagesOptions {
   offset?: number
 }
 
+export interface IAttachmentFileDetail {
+  file_name: string
+  file_size: string
+  view_link: string
+}
+
 export class ChatClient {
   private options: ChatClientOptions
   private tokenProvider: TokenProvider
@@ -279,6 +285,15 @@ export class ChatClient {
     return post(`${this.options.chatApiEndpoint}/groups.messages.saved.list`, {
       token,
       group_id: groupId
+    })
+  }
+
+  public async getAttachmentFileDetail(attachmentId: string): Promise<IAttachmentFileDetail> {
+    const token = await this.tokenProvider.getAuthToken()
+
+    return post(`${this.options.chatApiEndpoint}/attachments.file.get`, {
+      token,
+      attachment_id: attachmentId
     })
   }
 

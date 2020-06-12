@@ -72,6 +72,19 @@ const messages = await chatClient.sendMessage({
 });
 ```
 
+If you want to send files to be uploaded and attached, send an array of files rather than attachments:
+
+```javascript
+// either message or attachments must be provided.
+const messages = await chatClient.sendMessage({
+  groupId: "<group_id>",
+  message: "hello, world!",
+  files: File[],
+  parentMessageId: "<parent_message_id>",
+  mentions: ["2", "3"]
+});
+```
+
 ### Get my stats
 
 ```javascript
@@ -122,6 +135,18 @@ const messages = await chatClient.searchMessages({
 
 ```javascript
 const groupAttachments = await chatClient.getGroupAttachments("<group_id>", "<limit>", "<offset>");
+```
+
+### Get attachment file detail
+
+```javascript
+const attachmentDetail = await chatClient.getAttachmentFileDetail("<attachment_id>");
+```
+
+### Get attachment file download url
+
+```javascript
+const url = await chatClient.getAttachmentDownloadUrl("<attachment_id>");
 ```
 
 ### Add pinned message
