@@ -371,8 +371,7 @@ export class ChatClient {
     const { upload_link, key } = await this.getAttachmentUploadUrl(file.name, file.type)
 
     await put(upload_link, file, {
-      'Content-Type': file.type,
-      'x-amz-meta-file_name': file.name
+      'Content-Type': file.type
     })
 
     return key
