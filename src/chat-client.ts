@@ -365,7 +365,9 @@ export class ChatClient {
     this.pusherProvider.bind('chat:saved_message_removed', cb)
   }
 
-  private async uploadAttachment(file: File) {
+  private async uploadAttachment(attachmentFile: File) {
+    const file = this.getFileWithProperType(attachmentFile)
+
     const { upload_link, key } = await this.getAttachmentUploadUrl(file.name, file.type)
 
     await put(upload_link, file, {
@@ -374,6 +376,14 @@ export class ChatClient {
     })
 
     return key
+  }
+
+  private getFileWithProperType(file: File): File {
+    if (file.type) {
+      return file
+    }
+
+    return new File([file], file.name, { type: 'application/octet-stream' })
   }
 
   private async getAttachmentUploadUrl(fileName: string, mimeType: string) {
