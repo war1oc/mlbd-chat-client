@@ -60,9 +60,11 @@ export class ChatClient {
     let { groupId, message, attachments, parentMessageId, mentions, files } = sendMessageOptions
 
     if (files && files.length) {
-      const fileUploadPromises = files.map(f => this.uploadAttachment(f))
+      const attachmentFiles = files.map(f => this.getFileWithProperType(f))
+
+      const fileUploadPromises = attachmentFiles.map(f => this.uploadAttachment(f))
       const keys = await Promise.all(fileUploadPromises)
-      attachments = files.map((file, idx) => {
+      attachments = attachmentFiles.map((file, idx) => {
         return { title: file.name, url: keys[idx], mime_type: file.type }
       })
     }
@@ -365,9 +367,7 @@ export class ChatClient {
     this.pusherProvider.bind('chat:saved_message_removed', cb)
   }
 
-  private async uploadAttachment(attachmentFile: File) {
-    const file = this.getFileWithProperType(attachmentFile)
-
+  private async uploadAttachment(file: File) {
     const { upload_link, key } = await this.getAttachmentUploadUrl(file.name, file.type)
 
     await put(upload_link, file, {
