@@ -17,6 +17,14 @@ export interface ISendMessageOptions {
   files?: File[]
 }
 
+export interface IMessageHistoryOptions {
+  groupId: string
+  limit?: number
+  inclusive?: boolean
+  latest?: string
+  oldest?: string
+}
+
 export interface IMarkGroupAsReadOptions {
   groupId: string
 }
@@ -96,6 +104,31 @@ export class ChatClient {
     }
 
     return post(uri, { token, group_id: groupId })
+  }
+
+  public async getMessageHistory(options: IMessageHistoryOptions) {
+    const token = await this.tokenProvider.getAuthToken()
+    let uri = `${this.options.chatApiEndpoint}/messages.history?`
+
+    let {
+      limit,
+      inclusive,
+      latest = new Date().toISOString(),
+      oldest = new Date(0).toISOString(),
+      groupId
+    } = options
+
+    uri += `latest=${encodeURIComponent(latest)}&oldest=${encodeURIComponent(oldest)}`
+
+    if (limit) {
+      uri += `&limit=${limit}`
+    }
+
+    if (inclusive) {
+      uri += `&inclusive=${inclusive}`
+    }
+
+    return post(uri, { token, group_id: groupId, latest })
   }
 
   public async getMyStats() {
