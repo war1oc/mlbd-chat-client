@@ -131,6 +131,27 @@ const messages = await chatClient.searchMessages({
 
 `limit` and `offset` are to be used for pagination.
 
+### Get message history
+
+```javascript
+const messages = await chatClient.getMessageHistory({
+  // limit is optional, default: 10
+  limit: 5,
+  // optional, default: false
+  // should the response include messages with latest or oldest set dates
+  inclusive: true,
+  // optional, date of the latest message to find
+  latest: "<latest_date>",
+  // optional, date of the oldest message to find
+  oldest: "<oldest_date>",
+  groupId: "<group_id>"
+});
+```
+
+If latest and oldest both are provided or if none are provided, the latest message will be on the top of the response. This will also be the case if only latest date is provided.
+
+If latest is not provided and only oldest is provided, the oldest message will be on the top of the response.
+
 ### Get group attachments
 
 ```javascript

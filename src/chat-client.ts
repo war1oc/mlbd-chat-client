@@ -110,15 +110,19 @@ export class ChatClient {
     const token = await this.tokenProvider.getAuthToken()
     let uri = `${this.options.chatApiEndpoint}/messages.history?`
 
-    let {
-      limit,
-      inclusive,
-      latest = new Date().toISOString(),
-      oldest = new Date(0).toISOString(),
-      groupId
-    } = options
+    let { limit, inclusive, latest, oldest, groupId } = options
 
-    uri += `latest=${encodeURIComponent(latest)}&oldest=${encodeURIComponent(oldest)}`
+    if (!latest && !oldest) {
+      latest = new Date().toISOString()
+      oldest = new Date(0).toISOString()
+    }
+
+    if (latest) {
+      uri += `latest=${encodeURIComponent(latest)}`
+    }
+    if (oldest) {
+      uri += `${latest ? '&' : ''}oldest=${encodeURIComponent(oldest)}`
+    }
 
     if (limit) {
       uri += `&limit=${limit}`
