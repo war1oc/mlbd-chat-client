@@ -13,6 +13,17 @@ export interface IAttachmentOptions {
   sender_id?: string
 }
 
+export interface IAttachmentUploadUrl {
+  upload_link: string
+  key: string
+}
+
+export interface IAttachmentFileDetail {
+  file_name: string
+  file_size: string
+  view_link: string
+}
+
 export interface ISendMessageOptions {
   groupId: string
   message?: string
@@ -44,12 +55,6 @@ export interface ISearchMessagesOptions {
   offset?: number
 }
 
-export interface IAttachmentFileDetail {
-  file_name: string
-  file_size: string
-  view_link: string
-}
-
 export interface IRecipients {
   has_read: boolean
   user_id: string
@@ -74,16 +79,6 @@ export interface ILastMessage {
   sent_at: string
 }
 
-export interface IGroup {
-  created_at: string
-  id: string
-  last_message_at: string
-  members: Array<string>
-  meta: null
-  status: number
-  last_message: ILastMessage
-}
-
 export interface IMessageResponse {
   attachments: IAttachmentOptions[]
   group_id: string
@@ -99,6 +94,16 @@ export interface IMessageResponse {
   updated_at: string
 }
 
+export interface IGroup {
+  created_at: string
+  id: string
+  last_message_at: string
+  members: Array<string>
+  meta: null | any
+  status: number
+  last_message?: ILastMessage
+}
+
 export interface IGroupStats {
   group_id: string
   unread_mention_count: number
@@ -109,6 +114,37 @@ export interface IMyStats {
   group_stats: IGroupStats[]
   unread_mention_count: number
   unread_message_count: number
+}
+
+export interface IChatGroupUpdated {
+  created_at: string
+  id: string
+  last_message_at: string
+  members: Array<string>
+  meta: null | any
+  status: number
+  last_message: ILastMessage
+}
+
+export interface IChatGroupDeleted {
+  id: string
+  deleted_at: string
+}
+
+export interface IChatGroupMembers {
+  group_id: string
+  user_ids: Array<string>
+}
+
+export interface IChatGroupMember {
+  group_id: string
+  user_ids: Array<string>
+}
+
+export interface IChatMessageDeleted {
+  deleted_at: string
+  group_id: string
+  id: string
 }
 
 export class ChatClient {
@@ -422,68 +458,68 @@ export class ChatClient {
     return url
   }
 
-  public async connect() {
+  public async connect(): Promise<void> {
     const userId = await this.tokenProvider.getUserId()
     await this.pusherProvider.connect(userId)
   }
 
-  public async disconnect() {
+  public async disconnect(): Promise<void> {
     this.pusherProvider.disconnect()
   }
 
-  public onMessageRecieved(cb: (data: any) => void) {
+  public onMessageRecieved(cb: (data: IMessageResponse) => void) {
     this.pusherProvider.bind('chat:message_received', cb)
   }
 
-  public onAddedToGroup(cb: (data: any) => void) {
+  public onAddedToGroup(cb: (data: IGroup) => void) {
     this.pusherProvider.bind('chat:added_to_group', cb)
   }
 
-  public onGroupUpdated(cb: (data: any) => void) {
+  public onGroupUpdated(cb: (data: IChatGroupUpdated) => void) {
     this.pusherProvider.bind('chat:group_updated', cb)
   }
 
-  public onGroupDeleted(cb: (data: any) => void) {
+  public onGroupDeleted(cb: (data: IChatGroupDeleted) => void) {
     this.pusherProvider.bind('chat:group_deleted', cb)
   }
 
-  public onGroupMemberAdded(cb: (data: any) => void) {
+  public onGroupMemberAdded(cb: (data: IChatGroupMembers) => void) {
     this.pusherProvider.bind('chat:group_member_added', cb)
   }
 
-  public onGroupMemberRemoved(cb: (data: any) => void) {
+  public onGroupMemberRemoved(cb: (data: IChatGroupMembers) => void) {
     this.pusherProvider.bind('chat:group_member_removed', cb)
   }
 
-  public onMessageDeleted(cb: (data: any) => void) {
+  public onMessageDeleted(cb: (data: IChatMessageDeleted) => void) {
     this.pusherProvider.bind('chat:message_deleted', cb)
   }
 
-  public onMessageRead(cb: (data: any) => void) {
+  public onMessageRead(cb: (data: IChatGroupMember) => void) {
     this.pusherProvider.bind('chat:message_read', cb)
   }
 
-  public onMessageUpdated(cb: (data: any) => void) {
+  public onMessageUpdated(cb: (data: IMessageResponse) => void) {
     this.pusherProvider.bind('chat:message_updated', cb)
   }
 
-  public onPinnedMessageAdded(cb: (data: any) => void) {
+  public onPinnedMessageAdded(cb: (data: string) => void) {
     this.pusherProvider.bind('chat:pinned_message_added', cb)
   }
 
-  public onPinnedMessageRemoved(cb: (data: any) => void) {
+  public onPinnedMessageRemoved(cb: (data: string) => void) {
     this.pusherProvider.bind('chat:pinned_message_removed', cb)
   }
 
-  public onSavedMessageAdded(cb: (data: any) => void) {
+  public onSavedMessageAdded(cb: (data: string) => void) {
     this.pusherProvider.bind('chat:saved_message_added', cb)
   }
 
-  public onSavedMessageRemoved(cb: (data: any) => void) {
+  public onSavedMessageRemoved(cb: (data: string) => void) {
     this.pusherProvider.bind('chat:saved_message_removed', cb)
   }
 
-  private async uploadAttachment(file: File) {
+  private async uploadAttachment(file: File): Promise<string> {
     const { upload_link, key } = await this.getAttachmentUploadUrl(file.name, file.type)
 
     await put(upload_link, file, {
@@ -501,7 +537,10 @@ export class ChatClient {
     return new File([file], file.name, { type: 'application/octet-stream' })
   }
 
-  private async getAttachmentUploadUrl(fileName: string, mimeType: string) {
+  private async getAttachmentUploadUrl(
+    fileName: string,
+    mimeType: string
+  ): Promise<IAttachmentUploadUrl> {
     const token = await this.tokenProvider.getAuthToken()
 
     return post(`${this.options.chatApiEndpoint}/attachments.upload.url`, {
