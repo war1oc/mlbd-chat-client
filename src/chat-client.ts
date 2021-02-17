@@ -6,6 +6,11 @@ export interface IAttachmentOptions {
   title: string
   mime_type: string
   url: string
+  id?: string
+  created_at?: string
+  group_id?: string
+  message_id?: string
+  sender_id?: string
 }
 
 export interface ISendMessageOptions {
@@ -27,6 +32,9 @@ export interface IMessageHistoryOptions {
 
 export interface IMarkGroupAsReadOptions {
   groupId: string
+}
+export interface ISuccessResponse {
+  message: string
 }
 
 export interface ISearchMessagesOptions {
@@ -50,13 +58,15 @@ export interface IRecipients {
 export interface IParentMessage {
   id: string
   sender_id: string
+  message?: string
+  attachments?: IAttachmentOptions[]
 }
 
 export interface ILastMessage {
   group_id: string
   id: string
   message: string
-  parent_message: IParentMessage
+  parent_message?: IParentMessage
   parent_message_id: string
   reply_count: number
   recipients: IRecipients[]
@@ -72,6 +82,33 @@ export interface IGroup {
   meta: null
   status: number
   last_message: ILastMessage
+}
+
+export interface IMessageResponse {
+  attachments: IAttachmentOptions[]
+  group_id: string
+  id: string
+  mentions: Array<string>
+  message: string
+  parent_message?: IParentMessage
+  parent_message_id: string
+  recipients: IRecipients[]
+  reply_count: number
+  sender_id: string
+  sent_at: string
+  updated_at: string
+}
+
+export interface IGroupStats {
+  group_id: string
+  unread_mention_count: number
+  unread_message_count: number
+}
+
+export interface IMyStats {
+  group_stats: IGroupStats[]
+  unread_mention_count: number
+  unread_message_count: number
 }
 
 export class ChatClient {
@@ -95,7 +132,7 @@ export class ChatClient {
     return post(`${this.options.chatApiEndpoint}/groups.list`, { token })
   }
 
-  public async sendMessage(sendMessageOptions: ISendMessageOptions) {
+  public async sendMessage(sendMessageOptions: ISendMessageOptions): Promise<IMessageResponse> {
     const token = await this.tokenProvider.getAuthToken()
     let { groupId, message, attachments, parentMessageId, mentions, files } = sendMessageOptions
 
@@ -123,7 +160,11 @@ export class ChatClient {
     })
   }
 
-  public async getGroupMessages(groupId: string, limit?: number, skipTillTime?: Date) {
+  public async getGroupMessages(
+    groupId: string,
+    limit?: number,
+    skipTillTime?: Date
+  ): Promise<IMessageResponse[]> {
     const token = await this.tokenProvider.getAuthToken()
     let uri = `${this.options.chatApiEndpoint}/messages.list?`
 
@@ -138,7 +179,7 @@ export class ChatClient {
     return post(uri, { token, group_id: groupId })
   }
 
-  public async getMessageHistory(options: IMessageHistoryOptions) {
+  public async getMessageHistory(options: IMessageHistoryOptions): Promise<IMessageResponse[]> {
     const token = await this.tokenProvider.getAuthToken()
     let uri = `${this.options.chatApiEndpoint}/messages.history?`
 
@@ -167,12 +208,14 @@ export class ChatClient {
     return post(uri, { token, group_id: groupId, latest })
   }
 
-  public async getMyStats() {
+  public async getMyStats(): Promise<IMyStats> {
     const token = await this.tokenProvider.getAuthToken()
     return post(`${this.options.chatApiEndpoint}/users.stats`, { token })
   }
 
-  public async markGroupAsRead(markGroupAsReadOptions: IMarkGroupAsReadOptions) {
+  public async markGroupAsRead(
+    markGroupAsReadOptions: IMarkGroupAsReadOptions
+  ): Promise<ISuccessResponse> {
     const token = await this.tokenProvider.getAuthToken()
     const { groupId } = markGroupAsReadOptions
 
@@ -186,7 +229,7 @@ export class ChatClient {
     })
   }
 
-  public async deleteMessage(messageId: string) {
+  public async deleteMessage(messageId: string): Promise<ISuccessResponse> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!messageId) {
@@ -199,7 +242,7 @@ export class ChatClient {
     })
   }
 
-  public async getGroup(groupId: string) {
+  public async getGroup(groupId: string): Promise<IGroup> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!groupId) {
@@ -212,7 +255,7 @@ export class ChatClient {
     })
   }
 
-  public async getMessage(messageId: string) {
+  public async getMessage(messageId: string): Promise<IMessageResponse> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!messageId) {
@@ -225,7 +268,7 @@ export class ChatClient {
     })
   }
 
-  public async searchMessages(options: ISearchMessagesOptions) {
+  public async searchMessages(options: ISearchMessagesOptions): Promise<IMessageResponse[]> {
     const token = await this.tokenProvider.getAuthToken()
 
     let uri = `${this.options.chatApiEndpoint}/messages.search?`
@@ -253,7 +296,11 @@ export class ChatClient {
     return post(uri, body)
   }
 
-  public async getGroupAttachments(groupId: string, limit?: number, offset?: number) {
+  public async getGroupAttachments(
+    groupId: string,
+    limit?: number,
+    offset?: number
+  ): Promise<IAttachmentOptions[]> {
     const token = await this.tokenProvider.getAuthToken()
 
     let uri = `${this.options.chatApiEndpoint}/attachments.list?`
@@ -273,7 +320,7 @@ export class ChatClient {
     return post(uri, { token, group_id: groupId })
   }
 
-  public async addPinnedMessage(messageId: string) {
+  public async addPinnedMessage(messageId: string): Promise<ISuccessResponse> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!messageId) {
@@ -286,7 +333,7 @@ export class ChatClient {
     })
   }
 
-  public async removePinnedMessage(messageId: string) {
+  public async removePinnedMessage(messageId: string): Promise<ISuccessResponse> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!messageId) {
@@ -299,7 +346,7 @@ export class ChatClient {
     })
   }
 
-  public async getGroupPinnedMessages(groupId: string) {
+  public async getGroupPinnedMessages(groupId: string): Promise<IMessageResponse[]> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!groupId) {
@@ -312,7 +359,7 @@ export class ChatClient {
     })
   }
 
-  public async addSavedMessage(messageId: string) {
+  public async addSavedMessage(messageId: string): Promise<ISuccessResponse> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!messageId) {
@@ -325,7 +372,7 @@ export class ChatClient {
     })
   }
 
-  public async removeSavedMessage(messageId: string) {
+  public async removeSavedMessage(messageId: string): Promise<ISuccessResponse> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!messageId) {
@@ -338,7 +385,7 @@ export class ChatClient {
     })
   }
 
-  public async getSavedMessages() {
+  public async getSavedMessages(): Promise<IMessageResponse[]> {
     const token = await this.tokenProvider.getAuthToken()
 
     return post(`${this.options.chatApiEndpoint}/messages.saved.list`, {
@@ -346,7 +393,7 @@ export class ChatClient {
     })
   }
 
-  public async getGroupSavedMessages(groupId: string) {
+  public async getGroupSavedMessages(groupId: string): Promise<IMessageResponse[]> {
     const token = await this.tokenProvider.getAuthToken()
 
     if (!groupId) {
