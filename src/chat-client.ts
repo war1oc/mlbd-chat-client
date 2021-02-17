@@ -42,6 +42,38 @@ export interface IAttachmentFileDetail {
   view_link: string
 }
 
+export interface IRecipients {
+  has_read: boolean
+  user_id: string
+}
+
+export interface IParentMessage {
+  id: string
+  sender_id: string
+}
+
+export interface ILastMessage {
+  group_id: string
+  id: string
+  message: string
+  parent_message: IParentMessage
+  parent_message_id: string
+  reply_count: number
+  recipients: IRecipients[]
+  sender_id: string
+  sent_at: string
+}
+
+export interface IGroup {
+  created_at: string
+  id: string
+  last_message_at: string
+  members: Array<string>
+  meta: null
+  status: number
+  last_message: ILastMessage
+}
+
 export class ChatClient {
   private options: ChatClientOptions
   private tokenProvider: TokenProvider
@@ -54,11 +86,11 @@ export class ChatClient {
     this.pusherProvider = new PusherProvider({
       ...options.pusherOptions,
       authEndpoint: `${this.options.chatApiEndpoint}/channel.auth`,
-      tokenProvider: this.tokenProvider
+      tokenProvider: this.tokenProvider,
     })
   }
 
-  public async getMyGroups() {
+  public async getMyGroups(): Promise<IGroup[]> {
     const token = await this.tokenProvider.getAuthToken()
     return post(`${this.options.chatApiEndpoint}/groups.list`, { token })
   }
@@ -68,9 +100,9 @@ export class ChatClient {
     let { groupId, message, attachments, parentMessageId, mentions, files } = sendMessageOptions
 
     if (files && files.length) {
-      const attachmentFiles = files.map(f => this.getFileWithProperType(f))
+      const attachmentFiles = files.map((f) => this.getFileWithProperType(f))
 
-      const fileUploadPromises = attachmentFiles.map(f => this.uploadAttachment(f))
+      const fileUploadPromises = attachmentFiles.map((f) => this.uploadAttachment(f))
       const keys = await Promise.all(fileUploadPromises)
       attachments = attachmentFiles.map((file, idx) => {
         return { title: file.name, url: keys[idx], mime_type: file.type }
@@ -87,7 +119,7 @@ export class ChatClient {
       message,
       attachments,
       parent_message_id: parentMessageId,
-      mentions
+      mentions,
     })
   }
 
@@ -150,7 +182,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.read`, {
       token,
-      group_id: groupId
+      group_id: groupId,
     })
   }
 
@@ -163,7 +195,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.delete`, {
       token,
-      message_id: messageId
+      message_id: messageId,
     })
   }
 
@@ -176,7 +208,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/groups.get`, {
       token,
-      group_id: groupId
+      group_id: groupId,
     })
   }
 
@@ -189,7 +221,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.get`, {
       token,
-      message_id: messageId
+      message_id: messageId,
     })
   }
 
@@ -250,7 +282,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.pinned.add`, {
       token,
-      message_id: messageId
+      message_id: messageId,
     })
   }
 
@@ -263,7 +295,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.pinned.remove`, {
       token,
-      message_id: messageId
+      message_id: messageId,
     })
   }
 
@@ -276,7 +308,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/groups.messages.pinned.list`, {
       token,
-      group_id: groupId
+      group_id: groupId,
     })
   }
 
@@ -289,7 +321,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.saved.add`, {
       token,
-      message_id: messageId
+      message_id: messageId,
     })
   }
 
@@ -302,7 +334,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/messages.saved.remove`, {
       token,
-      message_id: messageId
+      message_id: messageId,
     })
   }
 
@@ -310,7 +342,7 @@ export class ChatClient {
     const token = await this.tokenProvider.getAuthToken()
 
     return post(`${this.options.chatApiEndpoint}/messages.saved.list`, {
-      token
+      token,
     })
   }
 
@@ -323,7 +355,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/groups.messages.saved.list`, {
       token,
-      group_id: groupId
+      group_id: groupId,
     })
   }
 
@@ -332,7 +364,7 @@ export class ChatClient {
 
     return post(`${this.options.chatApiEndpoint}/attachments.file.get`, {
       token,
-      attachment_id: attachmentId
+      attachment_id: attachmentId,
     })
   }
 
@@ -408,7 +440,7 @@ export class ChatClient {
     const { upload_link, key } = await this.getAttachmentUploadUrl(file.name, file.type)
 
     await put(upload_link, file, {
-      'Content-Type': file.type
+      'Content-Type': file.type,
     })
 
     return key
@@ -428,7 +460,7 @@ export class ChatClient {
     return post(`${this.options.chatApiEndpoint}/attachments.upload.url`, {
       token,
       file_name: fileName,
-      mime_type: mimeType
+      mime_type: mimeType,
     })
   }
 }
