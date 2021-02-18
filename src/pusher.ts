@@ -10,11 +10,13 @@ export class PusherProvider {
     this.options = options
     this.userId = ''
 
-    this.pusher = new Pusher(this.options.appKey, {
-      cluster: this.options.cluster,
-      authEndpoint: this.options.authEndpoint,
-      forceTLS: this.options.forceTLS,
-    })
+    this.pusher = options.pusherOptions
+
+    // this.pusher = new Pusher(this.options.appKey, {
+    //   cluster: this.options.cluster,
+    //   authEndpoint: this.options.authEndpoint,
+    //   forceTLS: this.options.forceTLS,
+    // })
   }
 
   public async connect(userId: string) {
@@ -43,4 +45,5 @@ export interface IPusherProviderOptions {
   forceTLS: boolean
   authEndpoint: string
   tokenProvider: TokenProvider
+  pusherOptions: Pusher
 }
