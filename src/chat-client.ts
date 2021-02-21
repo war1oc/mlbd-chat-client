@@ -156,12 +156,6 @@ export class ChatClient {
     this.options = options
     this.tokenProvider = options.tokenProvider
     this.pusherProvider = options.pusherProvider
-
-    // this.pusherProvider = new PusherProvider({
-    //   ...options.pusherOptions,
-    //   authEndpoint: `${this.options.chatApiEndpoint}/channel.auth`,
-    //   tokenProvider: this.tokenProvider,
-    // })
   }
 
   public async getMyGroups(): Promise<IGroup[]> {
