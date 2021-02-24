@@ -59,11 +59,11 @@ describe('Chat Client Class', function () {
 
   describe('sendMessage', () => {
     it('should call post with correct parameter ', async () => {
-      const receivedMessage = {
+      const inputMessage = {
         groupId: '1',
         message: 'Hello, world!',
       }
-      const sendMessage = await chatClient.sendMessage(receivedMessage)
+      const sendMessage = await chatClient.sendMessage(inputMessage)
       expect(mockPost).toHaveBeenLastCalledWith('https://my-chat-api/messages.send', {
         group_id: '1',
         message: 'Hello, world!',
