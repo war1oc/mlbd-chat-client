@@ -47,11 +47,26 @@ describe('Chat Client Class', function () {
       }
     })
 
-    it('should call post with token', async () => {
+    it('should call post with correct parameter', async () => {
       const received = [{ id: '1' }, { id: '2' }]
       mockPost.mockResolvedValue(received)
       const myGroups = await chatClient.getMyGroups()
       expect(mockPost).toHaveBeenLastCalledWith('https://my-chat-api/groups.list', {
+        token: '<CHAT_TOKEN>',
+      })
+    })
+  })
+
+  describe('sendMessage', () => {
+    it('should call post with correct parameter ', async () => {
+      const receivedMessage = {
+        groupId: '1',
+        message: 'Hello, world!',
+      }
+      const sendMessage = await chatClient.sendMessage(receivedMessage)
+      expect(mockPost).toHaveBeenLastCalledWith('https://my-chat-api/messages.send', {
+        group_id: '1',
+        message: 'Hello, world!',
         token: '<CHAT_TOKEN>',
       })
     })
