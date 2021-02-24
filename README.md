@@ -19,30 +19,30 @@ Initialize the client:
 ```javascript
 import { ChatClient, TokenProvider, PusherProvider } from '@mlbd/chat-client'
 
+const tokenProvider = new TokenProvider({
+  // This is a POST request configuration for fetching chat token
+  url: 'https://my-api/auth/chat',
+  getHeaders: () => {
+    // Optional
+    // return a headers object your endpoint requires
+    return Promise.resolve({ Authorization: 'Bearer <ACCESS_TOKEN>' })
+  },
+  getBody: () => {
+    // Optional
+    // return a body object your endpoint requires
+    return Promise.resolve({ key: 'value' })
+  },
+})
+
 const chatClient = new ChatClient({
   chatApiEndpoint: 'https://my-chat-api',
-  tokenProvider: new TokenProvider({
-    // This is a POST request configuration for fetching chat token
-    url: 'https://my-api/auth/chat',
-    getHeaders: () => {
-      // Optional
-      // return a headers object your endpoint requires
-      return Promise.resolve({ Authorization: 'Bearer <ACCESS_TOKEN>' })
-    },
-    getBody: () => {
-      // Optional
-      // return a body object your endpoint requires
-      return Promise.resolve({ key: 'value' })
-    },
-  }),
-  pusherOptions: new PusherProvider({
+  tokenProvider: tokenProvider,
+  pusherProvider: new PusherProvider({
     appKey: '<PUSHER_APP_KEY>',
     cluster: '<PUSHER_APP_CLUSTER>',
     forceTLS: true,
     authEndpoint: '<AUTH_END_POINT>',
-    tokenProvider: new TokenProvider({
-      url: 'https://my-api/auth/chat',
-    }),
+    tokenProvider: tokenProvider,
   }),
 })
 ```
