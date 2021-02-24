@@ -33,12 +33,11 @@ describe('Chat Client Class', function () {
       expect(myGroups).toBe(users)
     })
 
-    it('should call with token which is provided', async () => {
+    it('should call post with token ', async () => {
       const users = [{ name: 'Bob' }]
       const resp = users
       mockPost.mockImplementation(() => Promise.resolve(resp))
       const myGroups = await chatClient.getMyGroups()
-      expect(mockPost).toHaveBeenCalledTimes(2)
       expect(mockPost).toHaveBeenLastCalledWith('https://my-chat-api/groups.list', {
         token: 'tokenProvider',
       })
