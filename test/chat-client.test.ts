@@ -7,12 +7,12 @@ import { post, put } from '../src/request'
 jest.mock('../src/request')
 const mockPost = post as jest.Mock
 
-afterEach(() => {
-  jest.resetAllMocks()
-})
-
 describe('Chat Client Class', function () {
   let chatClient: ChatClient
+
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
 
   beforeEach(async () => {
     const tokenProvider: any = { getAuthToken: jest.fn().mockReturnValue('<CHAT_TOKEN>') }
@@ -30,11 +30,21 @@ describe('Chat Client Class', function () {
   })
 
   describe('getMyGroups', () => {
-    it('should return correct groups', async () => {
+    it('should return groups if post call is successful', async () => {
       const received = [{ id: '1' }, { id: '2' }]
       mockPost.mockResolvedValue(received)
       const myGroups = await chatClient.getMyGroups()
       expect(myGroups).toBe(received)
+    })
+
+    it('should return error if post call is fail ', async () => {
+      mockPost.mockImplementation(() => Promise.reject(new Error()))
+
+      try {
+        await chatClient.getMyGroups()
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
     })
 
     it('should call post with token', async () => {
@@ -44,15 +54,6 @@ describe('Chat Client Class', function () {
       expect(mockPost).toHaveBeenLastCalledWith('https://my-chat-api/groups.list', {
         token: '<CHAT_TOKEN>',
       })
-    })
-
-    it('should return error ', async () => {
-      mockPost.mockImplementation(() => Promise.reject(new Error('error')))
-      try {
-        await chatClient.getMyGroups()
-      } catch (e) {
-        expect(e).toEqual(new Error('error'))
-      }
     })
   })
 })
