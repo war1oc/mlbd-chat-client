@@ -1,13 +1,13 @@
 /**
  * ChatClient test
  */
-import { ChatClient } from '../src/chat-client'
+import { ChatClient, IMessageResponse } from '../src/chat-client'
 import { post, put } from '../src/request'
 
 jest.mock('../src/request')
 const mockPost = post as jest.Mock
 
-describe('Chat Client Class', function () {
+describe('Chat Client', function () {
   let chatClient: ChatClient
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('Chat Client Class', function () {
       expect(myGroups).toBe(received)
     })
 
-    it('should return error if post call is fail ', async () => {
+    it('should return error if post call fails', async () => {
       mockPost.mockImplementation(() => Promise.reject(new Error()))
 
       try {
@@ -58,7 +58,7 @@ describe('Chat Client Class', function () {
   })
 
   describe('sendMessage', () => {
-    it('should call post with correct parameter ', async () => {
+    it('should call post with correct parameter', async () => {
       const inputMessage = {
         groupId: '1',
         message: 'Hello, world!',
@@ -69,6 +69,90 @@ describe('Chat Client Class', function () {
         message: 'Hello, world!',
         token: '<CHAT_TOKEN>',
       })
+    })
+
+    it('should return created message if post call success', async () => {
+      const received = {
+        attachments: [],
+        group_id: '1',
+        id: '1',
+        message: 'Hello, world!',
+      }
+      mockPost.mockResolvedValue(received)
+
+      const inputMessage = {
+        groupId: '1',
+        message: 'Hello, world!',
+      }
+
+      const sendMessage = await chatClient.sendMessage(inputMessage)
+      expect(sendMessage.group_id).toBe(received.group_id)
+      expect(sendMessage.message).toBe(received.message)
+      expect(sendMessage).toEqual(received)
+    })
+
+    it('should return error if post call fails', async () => {
+      mockPost.mockImplementation(() => Promise.reject(new Error()))
+      const inputMessage = {
+        groupId: '1',
+        message: 'Hello, world!',
+      }
+      try {
+        await chatClient.sendMessage(inputMessage)
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+
+    it('should return error if validation failed', async () => {
+      const inputMessage = {
+        groupId: '1',
+      }
+      try {
+        await chatClient.sendMessage(inputMessage)
+      } catch (err) {
+        expect(err).toBeDefined()
+      }
+    })
+  })
+
+  describe('getGroupMessages', () => {
+    it('should call post with correct parameter', async () => {
+      const getGroupMessages = await chatClient.getGroupMessages('1')
+      expect(mockPost).toHaveBeenLastCalledWith('https://my-chat-api/messages.list?', {
+        group_id: '1',
+        token: '<CHAT_TOKEN>',
+      })
+    })
+
+    it('should return messages if post call success', async () => {
+      const received = [
+        {
+          attachments: [],
+          group_id: '1',
+          id: '1',
+          message: 'Hello, world!',
+        },
+        {
+          attachments: [],
+          group_id: '2',
+          id: '2',
+          message: 'Hello, world again!',
+        },
+      ]
+      mockPost.mockResolvedValue(received)
+      const getGroupMessages = await chatClient.getGroupMessages('1')
+      expect(getGroupMessages).toEqual(received)
+    })
+
+    it('should return error if post call fails', async () => {
+      mockPost.mockImplementation(() => Promise.reject(new Error()))
+
+      try {
+        await chatClient.getGroupMessages('1')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
     })
   })
 })
