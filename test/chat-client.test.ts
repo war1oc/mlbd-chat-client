@@ -155,4 +155,63 @@ describe('Chat Client', function () {
       }
     })
   })
+
+  describe('getMessageHistory', () => {
+    it('should call post with correct parameter', async () => {
+      const messageInput = {
+        groupId: '1',
+        latest: '2021-02-25',
+      }
+      const getMessageHistory = await chatClient.getMessageHistory(messageInput)
+      expect(mockPost).toHaveBeenLastCalledWith(
+        'https://my-chat-api/messages.history?latest=2021-02-25',
+        {
+          group_id: '1',
+          latest: '2021-02-25',
+          token: '<CHAT_TOKEN>',
+        }
+      )
+    })
+
+    it('should return messages if post call success', async () => {
+      const received = [
+        {
+          attachments: [],
+          group_id: '1',
+          id: '1',
+          message: 'Hello, world!',
+        },
+        {
+          attachments: [],
+          group_id: '2',
+          id: '2',
+          message: 'Hello, world again!',
+        },
+      ]
+      mockPost.mockResolvedValue(received)
+
+      const messageInput = {
+        groupId: '1',
+        latest: '2021-02-25',
+      }
+      const getMessageHistory = await chatClient.getMessageHistory(messageInput)
+      expect(getMessageHistory).toEqual(received)
+    })
+
+    it('should return error if post call fails', async () => {
+      mockPost.mockImplementation(() => Promise.reject(new Error()))
+
+      const messageInput = {
+        groupId: '1',
+        latest: '2021-02-25',
+      }
+
+      try {
+        await chatClient.getMessageHistory(messageInput)
+        expect(mockPost).toHaveBeenCalled()
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
+    })
+  })
 })
