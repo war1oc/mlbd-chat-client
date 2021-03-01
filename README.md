@@ -17,42 +17,46 @@ npm i @mlbd/chat-client
 Initialize the client:
 
 ```javascript
-import { ChatClient, TokenProvider } from '@mlbd/chat-client'
+import { ChatClient, TokenProvider, PusherProvider } from '@mlbd/chat-client'
+
+const tokenProvider = new TokenProvider({
+  // This is a POST request configuration for fetching chat token
+  url: 'https://my-api/auth/chat',
+  getHeaders: () => {
+    // Optional
+    // return a headers object your endpoint requires
+    return Promise.resolve({ Authorization: 'Bearer <ACCESS_TOKEN>' })
+  },
+  getBody: () => {
+    // Optional
+    // return a body object your endpoint requires
+    return Promise.resolve({ key: 'value' })
+  },
+})
 
 const chatClient = new ChatClient({
-  chatApiEndpoint: "https://my-chat-api",
-  tokenProvider: new TokenProvider({
-    // This is a POST request configuration for fetching chat token
-    url: "https://my-api/auth/chat",
-    getHeaders: () => {
-      // Optional
-      // return a headers object your endpoint requires
-      return Promise.resolve({ Authorization: "Bearer <ACCESS_TOKEN>" })
-    },
-    getBody: () => {
-      // Optional
-      // return a body object your endpoint requires
-      return Promise.resolve({ key: "value" })
-    }
-  }),
-  pusherOptions: {
+  chatApiEndpoint: 'https://my-chat-api',
+  tokenProvider: tokenProvider,
+  pusherProvider: new PusherProvider({
     appKey: '<PUSHER_APP_KEY>',
     cluster: '<PUSHER_APP_CLUSTER>',
-    forceTLS: true
-  }
-});
+    forceTLS: true,
+    authEndpoint: '<AUTH_END_POINT>',
+    tokenProvider: tokenProvider,
+  }),
+})
 ```
 
 ### Get my groups
 
 ```javascript
-const myGroups = await chatClient.getMyGroups();
+const myGroups = await chatClient.getMyGroups()
 ```
 
 ### Get group messages
 
 ```javascript
-const messages = await chatClient.getGroupMessages("<group_id>");
+const messages = await chatClient.getGroupMessages('<group_id>')
 ```
 
 ### Send message to a group
@@ -60,16 +64,18 @@ const messages = await chatClient.getGroupMessages("<group_id>");
 ```javascript
 // either message or attachments must be provided.
 const messages = await chatClient.sendMessage({
-  groupId: "<group_id>",
-  message: "hello, world!",
-  attachments: [{
-    title: "Laika - the dog",
-    mime_type: "image/jpeg",
-    url: "https://domain/laika.jpeg"
-  }],
-  parentMessageId: "<parent_message_id>",
-  mentions: ["2", "3"]
-});
+  groupId: '<group_id>',
+  message: 'hello, world!',
+  attachments: [
+    {
+      title: 'Laika - the dog',
+      mime_type: 'image/jpeg',
+      url: 'https://domain/laika.jpeg',
+    },
+  ],
+  parentMessageId: '<parent_message_id>',
+  mentions: ['2', '3'],
+})
 ```
 
 If you want to send files to be uploaded and attached, send an array of files rather than attachments:
@@ -88,45 +94,45 @@ const messages = await chatClient.sendMessage({
 ### Get my stats
 
 ```javascript
-const stats = await chatClient.getMyStats();
+const stats = await chatClient.getMyStats()
 ```
 
 ### Mark group as read
 
 ```javascript
-await chatClient.markGroupAsRead({ groupId: "<group_id>"});
+await chatClient.markGroupAsRead({ groupId: '<group_id>' })
 ```
 
 ### Delete message
 
 ```javascript
-await chatClient.deleteMessage("<message_id>");
+await chatClient.deleteMessage('<message_id>')
 ```
 
 ### Get group
 
 ```javascript
-const group = await chatClient.getGroup("<group_id>");
+const group = await chatClient.getGroup('<group_id>')
 ```
 
 ### Get message
 
 ```javascript
-const message = await chatClient.getMessage("<message_id>");
+const message = await chatClient.getMessage('<message_id>')
 ```
 
 ### Search messages
 
 ```javascript
 const messages = await chatClient.searchMessages({
-  keyword: "<search_keyword>",
+  keyword: '<search_keyword>',
   // groupId is optional, results will be filtered by group if this is passed
-  groupId: "<group_id>",
+  groupId: '<group_id>',
   // limit is optional, default: 10
   limit: 5,
   // offset is optional, default: 0
-  offset: 5
-});
+  offset: 5,
+})
 ```
 
 `limit` and `offset` are to be used for pagination.
@@ -141,11 +147,11 @@ const messages = await chatClient.getMessageHistory({
   // should the response include messages with latest or oldest set dates
   inclusive: true,
   // optional, date of the latest message to find
-  latest: "<latest_date>",
+  latest: '<latest_date>',
   // optional, date of the oldest message to find
-  oldest: "<oldest_date>",
-  groupId: "<group_id>"
-});
+  oldest: '<oldest_date>',
+  groupId: '<group_id>',
+})
 ```
 
 If latest and oldest both are provided or if none are provided, the latest message will be on the top of the response. This will also be the case if only latest date is provided.
@@ -155,61 +161,61 @@ If latest is not provided and only oldest is provided, the oldest message will b
 ### Get group attachments
 
 ```javascript
-const groupAttachments = await chatClient.getGroupAttachments("<group_id>", "<limit>", "<offset>");
+const groupAttachments = await chatClient.getGroupAttachments('<group_id>', '<limit>', '<offset>')
 ```
 
 ### Get attachment file detail
 
 ```javascript
-const attachmentDetail = await chatClient.getAttachmentFileDetail("<attachment_id>");
+const attachmentDetail = await chatClient.getAttachmentFileDetail('<attachment_id>')
 ```
 
 ### Get attachment file download url
 
 ```javascript
-const url = await chatClient.getAttachmentDownloadUrl("<attachment_id>");
+const url = await chatClient.getAttachmentDownloadUrl('<attachment_id>')
 ```
 
 ### Add pinned message
 
 ```javascript
-await chatClient.addPinnedMessage("<message_id>");
+await chatClient.addPinnedMessage('<message_id>')
 ```
 
 ### Remove pinned message
 
 ```javascript
-await chatClient.removePinnedMessage("<message_id>");
+await chatClient.removePinnedMessage('<message_id>')
 ```
 
 ### Get group pinned messages
 
 ```javascript
-const messages = await chatClient.getGroupPinnedMessages("<group_id>");
+const messages = await chatClient.getGroupPinnedMessages('<group_id>')
 ```
 
 ### Add saved message
 
 ```javascript
-await chatClient.addSavedMessage("<message_id>");
+await chatClient.addSavedMessage('<message_id>')
 ```
 
 ### Remove saved message
 
 ```javascript
-await chatClient.removeSavedMessage("<message_id>");
+await chatClient.removeSavedMessage('<message_id>')
 ```
 
 ### Get saved messages
 
 ```javascript
-const messages = await chatClient.getSavedMessages();
+const messages = await chatClient.getSavedMessages()
 ```
 
 ### Get group saved messages
 
 ```javascript
-const messages = await chatClient.getGroupSavedMessages("<group_id>");
+const messages = await chatClient.getGroupSavedMessages('<group_id>')
 ```
 
 ### Hooks
@@ -217,13 +223,13 @@ const messages = await chatClient.getGroupSavedMessages("<group_id>");
 When a user logs in:
 
 ```javascript
-await chatClient.connect();
+await chatClient.connect()
 ```
 
 When a user logs out:
 
 ```javascript
-await chatClient.disconnect();
+await chatClient.disconnect()
 ```
 
 #### Message Received
@@ -231,7 +237,7 @@ await chatClient.disconnect();
 ```javascript
 chatClient.onMessageRecieved((data: any) => {
   // You have a new message!
-});
+})
 ```
 
 #### Added To A Group
@@ -239,7 +245,7 @@ chatClient.onMessageRecieved((data: any) => {
 ```javascript
 chatClient.onAddedToGroup((data: any) => {
   // You have been added to a group!
-});
+})
 ```
 
 #### Group Updated
@@ -247,7 +253,7 @@ chatClient.onAddedToGroup((data: any) => {
 ```javascript
 chatClient.onGroupUpdated((data: any) => {
   // A group you are in has been updated!
-});
+})
 ```
 
 #### Group Deleted
@@ -255,7 +261,7 @@ chatClient.onGroupUpdated((data: any) => {
 ```javascript
 chatClient.onGroupDeleted((data: any) => {
   // A group you were in has been deleted!
-});
+})
 ```
 
 #### Group Member Added
@@ -263,7 +269,7 @@ chatClient.onGroupDeleted((data: any) => {
 ```javascript
 chatClient.onGroupMemberAdded((data: any) => {
   // A new member has been added to a group where you're in!
-});
+})
 ```
 
 #### Group Member Removed
@@ -271,7 +277,7 @@ chatClient.onGroupMemberAdded((data: any) => {
 ```javascript
 chatClient.onGroupMemberRemoved((data: any) => {
   // A member has been removed from a group where you're in!
-});
+})
 ```
 
 #### Message Deleted
@@ -279,7 +285,7 @@ chatClient.onGroupMemberRemoved((data: any) => {
 ```javascript
 chatClient.onMessageDeleted((data: any) => {
   // A message has been deleted from a group where you're in!
-});
+})
 ```
 
 #### Message Read
@@ -287,7 +293,7 @@ chatClient.onMessageDeleted((data: any) => {
 ```javascript
 chatClient.onMessageRead((data: any) => {
   // A message has been read in a group where you're in!
-});
+})
 ```
 
 #### Message Updated
@@ -295,7 +301,7 @@ chatClient.onMessageRead((data: any) => {
 ```javascript
 chatClient.onMessageUpdated((data: any) => {
   // A message has been updated in a group where you're in!
-});
+})
 ```
 
 #### Pinned Message Added
@@ -303,7 +309,7 @@ chatClient.onMessageUpdated((data: any) => {
 ```javascript
 chatClient.onPinnedMessageAdded((data: any) => {
   // A message has been pinned in a group where you're in!
-});
+})
 ```
 
 #### Pinned Message Removed
@@ -311,7 +317,7 @@ chatClient.onPinnedMessageAdded((data: any) => {
 ```javascript
 chatClient.onPinnedMessageRemoved((data: any) => {
   // A message has been unpinned in a group where you're in!
-});
+})
 ```
 
 #### Saved Message Added
@@ -319,7 +325,7 @@ chatClient.onPinnedMessageRemoved((data: any) => {
 ```javascript
 chatClient.onSavedMessageAdded((data: any) => {
   // A message has been saved!
-});
+})
 ```
 
 #### Saved Message Removed
@@ -327,7 +333,7 @@ chatClient.onSavedMessageAdded((data: any) => {
 ```javascript
 chatClient.onSavedMessageRemoved((data: any) => {
   // A message has been unsaved!
-});
+})
 ```
 
 ## Developing

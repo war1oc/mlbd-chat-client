@@ -155,12 +155,7 @@ export class ChatClient {
   constructor(options: ChatClientOptions) {
     this.options = options
     this.tokenProvider = options.tokenProvider
-
-    this.pusherProvider = new PusherProvider({
-      ...options.pusherOptions,
-      authEndpoint: `${this.options.chatApiEndpoint}/channel.auth`,
-      tokenProvider: this.tokenProvider,
-    })
+    this.pusherProvider = options.pusherProvider
   }
 
   public async getMyGroups(): Promise<IGroup[]> {
@@ -560,5 +555,5 @@ export interface PusherOptions {
 export interface ChatClientOptions {
   chatApiEndpoint: string
   tokenProvider: TokenProvider
-  pusherOptions: PusherOptions
+  pusherProvider: PusherProvider
 }
